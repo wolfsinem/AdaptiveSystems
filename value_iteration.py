@@ -1,19 +1,9 @@
-# Assignment for Adaptive Systems
 import numpy as np
 
-REWARD = -1
-GAMMA = 0.9
+REWARD = -0.1
+GAMMA = 0.7
 
-# Arrow symbols
-# ACTIONS = {
-#     3: '\u2191', #U
-#     2: '\u2192', #R
-#     1: '\u2193', #D
-#     0: '\u2190' #L
-# }
-
-# Initialize the actions which can be D, L, U, R
-ACTIONS = [(1, 0), (0, -1), (-1, 0), (0, 1)] 
+ACTIONS = [(1, 0), (0, -1), (-1, 0), (0, 1)]  # actions which can be D, L, U, R
 NUM_ACTIONS = len(ACTIONS)
 
 # Grid size based on amount of rows and columns
@@ -21,157 +11,125 @@ ROW = 4
 COL = 4
 
 # Grid with all of the rewards
-U = [[-1, -1, -1, 40],
-    [-1, -1, -10, -10],
-    [-1, -1, -1, -1],
-    [10, -2, -1, -1]]
+rewards = [[0, 0, 0, 40],
+           [0, 0, -10, -10],
+           [0, 0, 0, 0],
+           [10, -2, 0, 0]]
 
-# Visualization
+
 def maze_grid(arr, policy=False):
     """This function initializes the maze grid with all of the 
     given rewards per state and prints it out nicely.    
     The grid has 4 rows and 4 columns which is set in the cell above.
-
-    Args:
-        arr::[int]
-            Multidimensional grid with rewards per state
-    
-    Returns:
-        res::int
-            Prints out the result
     """
     res = ""
     for r in range(ROW):
         res += "|"
         for c in range(COL):
-            # val = "-1"
-            # if r == 0 and c == 0:
-            #     val = "+10" 
-            # elif r == 0 and c == 1:
-            #     val = "-2"
-            # elif r == 2 and c == 2:
-            #     val = "-10"
-            # elif r == 2 and c == 3:
-            #     val = "-10"
-            # elif r == 3 and c == 3:
-            #     val = "+40"
-            # else:
-            if policy:
-                val = ['\u2193', '\u2190', '\u2191', '\u2192'][arr[r][c]]
+            if r == 0 and c == 3:
+                val = "F +40"
+            elif r == 3 and c == 0:
+                val = "F +10"
+            elif r == 3 and c == 2:
+                val += " S"
             else:
-                val = str(arr[r][c])
-            res += " " + val[:5].ljust(5) + " |" # format
+                if policy:
+                    val = ['\u2193', '\u2190', '\u2191', '\u2192'][arr[r][c]] # arrow symbols
+                else:
+                    val = str(arr[r][c])
+            res += " " + val[:5].ljust(5) + " |" 
         res += "\n"
     print(res)
 
 
-# Get the utility of the state reached by performing the given action from the given state
-def getU(U, r, c, action):
-    """This function initializes the maze grid with all of the 
-    given rewards per state and prints it out nicely.    
-    The grid has 4 rows and 4 columns which is set in the cell above.
-
-    Args:
-        U::[int]
-            Multidimensional grid with rewards per state
-        r::[int]
-            Multidimensional grid with rewards per state          
-        c::[int]
-            Multidimensional grid with rewards per state
-        action::[int]
-            Multidimensional grid with rewards per state 
-    Returns:
-        U[newR][newC]::int
-            Prints out the result
+def getU(rewards, r, c, action):
+    """This function gets the utility of the state reached 
+    by performing the given action from the given state
     """
     dr, dc = ACTIONS[action]
-    newR, newC = r+dr, c+dc
+    newR = r + dr
+    newC = c + dc
     if newR < 0 or newC < 0 or newR >= ROW or newC >= COL or (newR == newC == 1):
-        return U[r][c]
+        return rewards[r][c]
     else:
-        return U[newR][newC]
+        return rewards[newR][newC]
 
 
-# Calculate the utility of a state given an action
-def calculateU(U, r, c, action):
-    """This function initializes the maze grid with all of the 
-    given rewards per state and prints it out nicely.    
-    The grid has 4 rows and 4 columns which is set in the cell above.
-
-    Args:
-        U::[int]
-            Multidimensional grid with rewards per state
-        r::[int]
-            Multidimensional grid with rewards per state          
-        c::[int]
-            Multidimensional grid with rewards per state
-        action::[int]
-            Multidimensional grid with rewards per state 
-    Returns:
-        u::int
-            Prints out the result
+def calculateU(rewards, r, c, action):
+    """This function calculates the utility of a state given 
+    an action
     """
+
+    # if r == 0 and c == 0:
+    #     u = +10
+    # elif r == 0 and c == 1:
+    #     u = -2
+    # elif r == 2 and c == 2:
+    #     u = -10
+    # elif r == 2 and c == 3:
+    #     u = -10
+    # elif r == 3 and c == 3:
+    #     u = +40
+    # else:
     u = REWARD
-    u += 0.1 * GAMMA * getU(U, r, c, (action-1)%4)
-    u += 0.8 * GAMMA * getU(U, r, c, action)
-    u += 0.1 * GAMMA * getU(U, r, c, (action+1)%4)
+                
+    u += 0.1 * GAMMA * getU(rewards, r, c, (action-1)%4)
+    u += 0.7 * GAMMA * getU(rewards, r, c, action)
+    u += 0.1 * GAMMA * getU(rewards, r, c, (action+1)%4)
     return u
 
-
-def valueIteration(U):
+def valueIteration(rewards):
     """This function initializes the maze grid with all of the 
     given rewards per state and prints it out nicely.    
     The grid has 4 rows and 4 columns which is set in the cell above.
-
-    Args:
-        U::[int]
-            Multidimensional grid with rewards per state
-    
-    Returns:
-        U::int
-            Prints out the result
     """
     print("During the value iteration:\n")
     while True:
-        nextU = [[0, 0, 0, 1], [0, 0, 0, -1], [0, 0, 0, 0], [0, 0, 0, 0]]
+        nextU = [[0, 0, 0, 40], 
+                 [0, 0, 0, 0], 
+                 [0, 0, 0, 0], 
+                 [10, 0, 0, 0]]
         error = 0
         for r in range(ROW):
             for c in range(COL):
-                if (r <= 1 and c == 3) or (r == c == 1):
+                if (r <= 1 and c == 4) or (r == 3 and c == 2):
                     continue
-                nextU[r][c] = max([calculateU(U, r, c, action) for action in range(NUM_ACTIONS)]) # Bellman update
-                error = max(error, abs(nextU[r][c]-U[r][c]))
-        U = nextU
-        maze_grid(U)
+                nextU[r][c] = max([calculateU(rewards, r, c, action) for action in range(NUM_ACTIONS)]) # Bellman update
+                error = max(error, abs(nextU[r][c]-rewards[r][c]))
+        rewards = nextU
+        maze_grid(rewards)
         if error < ((1-GAMMA) / GAMMA):
             break
-    return U
+    return rewards
 
 
-# Get the optimal policy from U
-def getOptimalPolicy(U):
-    """This function initializes the maze grid with all of the 
-    given rewards per state and prints it out nicely.    
-    The grid has 4 rows and 4 columns which is set in the cell above.
-
-    Args:
-        U::[int]
-            Multidimensional grid with rewards per state
-    
-    Returns:
-        policy::int
-            returns the optimal policy
+def getOptimalPolicy(rewards):
+    """This function gets the optimal policy from U
     """
-    policy = [[-1, -1, -1, -1] for i in range(ROW)]
+    policy = [[-1, -1, -1, 40],[-1, -1, -10, -10],[-1, -1, -1, -1],[10, -2, -1, -1]]
     for r in range(ROW):
         for c in range(COL):
-            if (r <= 1 and c == 3) or (r == c == 1):
+            if (r <= 1 and c == 4) or (r == 3 and c == 2):
                 continue
             # Choose the action that maximizes the utility
             maxAction, maxU = None, -float("inf")
             for action in range(NUM_ACTIONS):
-                u = calculateU(U, r, c, action)
+                u = calculateU(rewards, r, c, action)
                 if u > maxU:
                     maxAction, maxU = action, u
             policy[r][c] = maxAction
     return policy
+
+
+# Print the initial environment
+print("The initial maze grid is:\n")
+maze_grid(rewards)
+
+# Value iteration
+rewards = valueIteration(rewards)
+# print(rewards)
+
+# Get the optimal policy from U and print it
+policy = getOptimalPolicy(rewards)
+print("The optimal policy is:\n")
+maze_grid(policy, True)
