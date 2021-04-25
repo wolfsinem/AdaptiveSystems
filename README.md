@@ -30,4 +30,4 @@ Je begint met een grid waarvan de rewards erin staan vermeld zoals hieronder:
 
 Na het runnen van de functie hierboven krijg je de optimale policy:
 
-![Alt text](images/optimal_policy.png "Title")
+![Alt text](images/optimal_policy2.png "Title")
