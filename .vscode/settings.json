@@ -1,0 +1,20 @@
+{
+    "editor.formatOnSave": true,
+    "editor.autoIndent": "advanced",
+    "editor.detectIndentation": true,
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnPaste": true,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.snippetSuggestions": "top",
+    "editor.rulers": [
+        {
+            "column": 80,
+            "color": "#424142"
+        },
+        {
+
+        },
+    ],
+
+}
