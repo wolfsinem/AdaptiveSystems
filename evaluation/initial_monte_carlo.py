@@ -7,13 +7,12 @@ from coords import *
 
 # Initialise parameters
 MAX_EP = 100
-DISCOUNT_FACTOR = 0.99
 ACTIONS = [0, 1, 2, 3]
 STEP_COST = -1
 MAX_EP_LEN = 30
 
 
-def mc_evaluation_policy(env):
+def mc_evaluation_policy(env, discount_factor):
     """[summary]
 
     Args:
@@ -35,7 +34,7 @@ def mc_evaluation_policy(env):
                 break
 
         for i, step in enumerate(episode[::-1]):
-            G = DISCOUNT_FACTOR * G + step[1]
+            G = discount_factor * G + step[1]
             if step[0] not in np.array(episode[::-1])[:, 0][i+1:]:
                 rewards[str(step[0])].append(G)
                 maze_rewards[step[0]] = np.mean(rewards[str(step[0])])
@@ -47,4 +46,4 @@ env = Maze(maze_coords,
            reversed_maze, step_cost=STEP_COST, max_ep_length=MAX_EP_LEN)
 
 
-print(mc_evaluation_policy(env=env))
+print(mc_evaluation_policy(env, discount_factor=0.99))
