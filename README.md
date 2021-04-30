@@ -2,7 +2,7 @@
 ## Value Iteration
 
 
-In de Jupyter Notebook staat alle informatie met betrekking tot de code. 
+In de Jupyter Notebook staat alle informatie met betrekking tot de code.
 
 1. Geef de juiste parameters aan.
 2. Initialiseer de maze grid met de rewards.
@@ -31,3 +31,6 @@ Je begint met een grid waarvan de rewards erin staan vermeld zoals hieronder:
 Na het runnen van de functie hierboven krijg je de optimale policy:
 
 ![Alt text](images/optimal_policy2.png "Title")
+
+## Monte carlo
+Check https://github.com/wolfsinem/as/blob/main/evaluation/initial_monte_carlo.py
