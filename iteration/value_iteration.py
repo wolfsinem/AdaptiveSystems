@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import pickle
 
 REWARD = -0.1
 GAMMA = 0.7
@@ -29,9 +30,12 @@ def maze_grid(arr, policy=False):
         res += "|"
         for c in range(COL):
             if r == 0 and c == 3:
-                val = "0"
+                val = "F"
             elif r == 3 and c == 0:
-                val = "0"
+                val = "F"
+            elif r == 3 and c == 2:
+                val += " S"
+
             else:
                 if policy:
                     # arrow symbols
