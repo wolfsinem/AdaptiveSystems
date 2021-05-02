@@ -13,6 +13,7 @@ ACTIONS = [0, 1, 2, 3]
 STEP_COST = -1
 MAX_EP_LEN = 30
 
+epsilon = 0.25
 
 def mc_evaluation_policy(env, discount_factor):
     """[summary]
@@ -68,22 +69,21 @@ def probability(A):
     Returns:
         [type]: [description]
     """
-    epsilon = 0.25
     idx = np.argmax(A)
-    probs = []
-    A_ = np.sqrt(sum([i**2 for i in A]))
+    probabilities = []
+    action_val = np.sqrt(sum([i**2 for i in A]))
 
-    if A_ == 0:
-        A_ = 1.0
+    if action_val == 0:
+        action_val = 1.0
     for i, a in enumerate(A):
         if i == idx:
-            probs.append(round(1-epsilon + (epsilon/A_), 3))
+            probabilities.append(round(1-epsilon + (epsilon/action_val), 3))
         else:
-            probs.append(round(epsilon/A_, 3))
-    err = sum(probs)-1
+            probabilities.append(round(epsilon/action_val, 3))
+    err = sum(probabilities)-1
     substracter = err/len(A)
 
-    return np.array(probs)-substracter
+    return np.array(probabilities)-substracter
 
 
 def rewards_lists(cells, actions):
