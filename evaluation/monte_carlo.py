@@ -116,6 +116,18 @@ def rewards_lists(cells, actions):
     return rewards
 
 def first_visit_mc(env, max_ep, discount_factor, rewards):
+    """On-policy first-visit MC control (for e-soft policies), estimates
+    pi ~ pi*
+
+    Args:
+        env ([type]): [description]
+        max_ep ([type]): [description]
+        discount_factor ([type]): [description]
+        rewards ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
 
     maze_rewards = np.zeros((16, 4))
     maze_rewards[3] = 40
@@ -157,28 +169,3 @@ def print_val(values, length=4):
     for i in range(len(values) // length):
         sub_list = values[i * length:(i + 1) * length]
         print(' | '.join(map(str, sub_list)))
-
-
-def plot_val(state_value_grid):
-    """[summary]
-
-    Args:
-        state_value_grid ([type]): [description]
-    """
-    plt.figure(figsize=(10, 5))
-    p = sns.heatmap(state_value_grid, cmap='coolwarm', annot=True,
-                    fmt=".1f", annot_kws={'size': 16}, square=True)
-    p.set_ylim(len(state_value_grid)+0.01, -0.01)
-
-
-env = Maze(maze_coords,
-           reversed_maze, step_cost=STEP_COST, max_ep_length=MAX_EP_LEN)
-
-
-# print(f"Evaluation with discount factor 0.99:")
-# print(print_val(mc_evaluation_policy(env, discount_factor=0.99)))
-# plot_val(mc_evaluation_policy(env, discount_factor=0.99))
-
-# print(f"Evaluation with discount factor 1:")
-# print(print_val(mc_evaluation_policy(env, discount_factor=1)))
-# plot_val(mc_evaluation_policy(env, discount_factor=1))
