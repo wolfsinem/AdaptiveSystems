@@ -94,7 +94,7 @@ def plot_q_table(maze_rewards):
                             (0.05, 2.5), (1.05, 2.5), (2.05, 2.5), (3.05, 2.5),
                             (0.05, 3.5), (1.05, 3.5), (2.05, 3.5), (3.05, 3.5)]
 
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=(15, 15))
 
     ax.set_ylim(4, 0)
     tripcolor = q_table(left, top, right, bottom, ax=ax,
@@ -106,15 +106,15 @@ def plot_q_table(maze_rewards):
     fig.colorbar(tripcolor)
 
     for i, (xi, yi) in enumerate(top_coords):
-        plt.text(xi, yi, round(top.flatten()[i], 2), size=11, color="w")
+        plt.text(xi, yi, round(top.flatten()[i], 2), size=15, color="w")
 
     for i, (xi, yi) in enumerate(right_coords):
-        plt.text(xi, yi, round(right.flatten()[i], 2), size=11, color="w")
+        plt.text(xi, yi, round(right.flatten()[i], 2), size=15, color="w")
 
     for i, (xi, yi) in enumerate(left_coords):
-        plt.text(xi, yi, round(left.flatten()[i], 2), size=11, color="w")
+        plt.text(xi, yi, round(left.flatten()[i], 2), size=15, color="w")
 
     for i, (xi, yi) in enumerate(bottom_coords):
-        plt.text(xi, yi, round(bottom.flatten()[i], 2), size=11, color="w")
+        plt.text(xi, yi, round(bottom.flatten()[i], 2), size=15, color="w")
 
     plt.show()
