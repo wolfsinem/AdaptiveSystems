@@ -13,7 +13,22 @@ ACTIONS = [0, 1, 2, 3]
 STEP_COST = -1
 MAX_EP_LEN = 30
 
-epsilon = 0.25
+EPSILON = 0.25
+
+# intialize maze rewards grid with values
+mc_maze_rewards = np.zeros(16)
+mc_maze_rewards[3] = 40
+mc_maze_rewards[12] = 10
+mc_maze_rewards[13] = -2
+mc_maze_rewards[6] = -10
+mc_maze_rewards[7] = -10
+
+fv_maze_rewards = np.zeros((16, 4))
+fv_maze_rewards[3] = 40
+fv_maze_rewards[12] = 10
+fv_maze_rewards[13] = -2
+fv_maze_rewards[6] = -10
+fv_maze_rewards[7] = -10
 
 def mc_evaluation_policy(env, discount_factor):
     """First visit Monte Carlo prediction for estimating V ~ v pi.
@@ -31,14 +46,6 @@ def mc_evaluation_policy(env, discount_factor):
         "8": [], "9": [], "10": [], "11": [],
         "12": [], "13": [], "14": [], "15": []
     }
-
-    maze_rewards = np.zeros(16)
-    maze_rewards[3] = 40
-    maze_rewards[12] = 10
-    maze_rewards[13] = -2
-    maze_rewards[6] = -10
-    maze_rewards[7] = -10
-
     for ep in range(MAX_EP):
         G = 0
         start_state = env.reset()
@@ -55,10 +62,10 @@ def mc_evaluation_policy(env, discount_factor):
             G = discount_factor * G + step[1]
             if step[0] not in np.array(episode[::-1])[:, 0][i+1:]:
                 rewards[str(step[0])].append(G)
-                maze_rewards[step[0]] = round(
+                mc_maze_rewards[step[0]] = round(
                     np.mean(rewards[str(step[0])]), 2)
 
-    return maze_rewards
+    return mc_maze_rewards
 
 
 def probability(A):
@@ -79,9 +86,9 @@ def probability(A):
         action_val = 1.0
     for i, a in enumerate(A):
         if i == idx:
-            probabilities.append(round(1-epsilon + (epsilon/action_val), 3))
+            probabilities.append(round(1-EPSILON + (EPSILON/action_val), 3))
         else:
-            probabilities.append(round(epsilon/action_val, 3))
+            probabilities.append(round(EPSILON/action_val, 3))
     err = sum(probabilities)-1
     substracter = err/len(A)
 
@@ -130,20 +137,12 @@ def first_visit_mc(env, max_ep, discount_factor, rewards):
     Returns:
         [type]: Array with rewards
     """
-
-    maze_rewards = np.zeros((16, 4))
-    maze_rewards[3] = 40
-    maze_rewards[12] = 10
-    maze_rewards[13] = -2
-    maze_rewards[6] = -10
-    maze_rewards[7] = -10
-
     for ep in range(max_ep):
         G = 0
         state = env.reset()
         trajectory = []
         while True:
-            action_values = maze_rewards[state]
+            action_values = fv_maze_rewards[state]
             probs = probability(action_values)
             action = np.random.choice(np.arange(4), p=probs)
             next_state, reward, done = env.step(action)
@@ -156,9 +155,9 @@ def first_visit_mc(env, max_ep, discount_factor, rewards):
             # first visit check
             if step[0] not in np.array(trajectory[::-1])[:, 0][idx+1:]:
                 rewards[str(step[0])+", "+str(step[1])].append(G)
-                maze_rewards[step[0]][step[1]] = np.mean(
+                fv_maze_rewards[step[0]][step[1]] = np.mean(
                     rewards[str(step[0])+", "+str(step[1])])
-    return maze_rewards
+    return fv_maze_rewards
 
 
 def print_val(values, length=4):
