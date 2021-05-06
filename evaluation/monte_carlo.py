@@ -16,13 +16,14 @@ MAX_EP_LEN = 30
 epsilon = 0.25
 
 def mc_evaluation_policy(env, discount_factor):
-    """[summary]
+    """First visit Monte Carlo prediction for estimating V ~ v pi.
 
     Args:
-        env ([type]): [description]
+        env ([type]): Init environment
+        discount_factor ([type]): The discount factor
 
     Returns:
-        [type]: [description]
+        [type]: An array with rewards
     """
     rewards = {
         "0": [], "1": [], "2": [], "3": [],
@@ -61,13 +62,14 @@ def mc_evaluation_policy(env, discount_factor):
 
 
 def probability(A):
-    """[summary]
+    """This function calculates the probability of an agent going either
+    UP, DOWN, RIGHT or UP.
 
     Args:
         A ([type]): [description]
 
     Returns:
-        [type]: [description]
+        [type]: The probabilty
     """
     idx = np.argmax(A)
     probabilities = []
@@ -90,11 +92,11 @@ def rewards_lists(cells, actions):
     """Initialize rewards lists
 
     Args:
-        cells ([type]): [description]
-        actions ([type]): [description]
+        cells ([type]): Array with cells in grid
+        actions ([type]): Array with possible actions
 
     Returns:
-        [type]: [description]
+        [type]: Rewards dictionary
     """
     # Each state has four possible actions to take
     def create_array(n, lst):
@@ -120,13 +122,13 @@ def first_visit_mc(env, max_ep, discount_factor, rewards):
     pi ~ pi*
 
     Args:
-        env ([type]): [description]
-        max_ep ([type]): [description]
-        discount_factor ([type]): [description]
-        rewards ([type]): [description]
+        env ([type]): Initialize environment
+        max_ep ([type]): Maximum episodes
+        discount_factor ([type]): The discount factor
+        rewards ([type]): Given rewards
 
     Returns:
-        [type]: [description]
+        [type]: Array with rewards
     """
 
     maze_rewards = np.zeros((16, 4))
@@ -163,8 +165,8 @@ def print_val(values, length=4):
     """Basic function to print out the values in a 'grid'.
 
     Args:
-        values ([type]): [description]
-        length (int, optional): [description]. Defaults to 4.
+        values ([type]): The rewards
+        length (int, optional): Lenght of grid. Defaults to 4.
     """
     for i in range(len(values) // length):
         sub_list = values[i * length:(i + 1) * length]

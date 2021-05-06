@@ -3,19 +3,22 @@ import copy
 
 class Maze():
     """Class for a 4x4 maze with 16 cells in total from 0 to 15.
-
         [0 , 1 , 2 , 3]
         [4 , 5 , 6 , 7]
         [8 , 9 , 10, 11]
         [12 , 13 , 14 , 15]
-
-        Args:
-            step_reward ([type], optional): [description]. Defaults to step_reward.
-            episodes ([type], optional): [description]. Defaults to episodes.
-            es (bool, optional): [description]. Defaults to False.
         """
     def __init__(self, maze_coords, reversed_maze,
                  step_cost=-1, max_ep_length=100, es=False):
+        """[summary]
+
+        Args:
+            maze_coords ([type]): [description]
+            reversed_maze ([type]): [description]
+            step_cost (int, optional): [description]. Defaults to -1.
+            max_ep_length (int, optional): [description]. Defaults to 100.
+            es (bool, optional): [description]. Defaults to False.
+        """
 
         self.actions = {
             "up": 0,
@@ -59,10 +62,10 @@ class Maze():
 
 
     def reset(self):
-        """[summary]
+        """Resets the state to it's initial values.
 
         Returns:
-            [type]: [description]
+            [type]: Returns new exploring start
         """
         self.done = False
         self.steps = 0
@@ -87,14 +90,15 @@ class Maze():
 
 
     def get_next_state(self, current_position, action):
-        """[summary]
+        """Given the current position, retrieve the next state based on an
+        action.
 
         Args:
-            current_position ([type]): [description]
-            action ([type]): [description]
+            current_position ([type]): current position on the grid
+            action ([type]): Type of action the agent takes e.g. U/D/L/R
 
         Returns:
-            [type]: [description]
+            [type]: The coordinates of the next state
         """
 
         next_state = self.reversed_maze[str(current_position)].copy()
@@ -118,13 +122,13 @@ class Maze():
 
 
     def step(self, action):
-        """[summary]
+        """Takes a step and based on that give back a reward.
 
         Args:
-            action ([type]): [description]
+            action ([type]): Type of action the agent takes e.g. U/D/L/R
 
         Returns:
-            [type]: [description]
+            [type]: The next state and given reward
         """
         current_position = self.start_state
         next_state = self.get_next_state(current_position, action)
