@@ -1,11 +1,10 @@
-import copy
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import random
+from maze_class import Maze
+from coords import maze_coords, reversed_maze
+import sys
+sys.path.append('/Users/wolfsinem/as/evaluation/')
 
-from maze_class import *
-from coords import *
+import numpy as np
+import random
 
 # Initialise parameters
 MAX_EP = 100
@@ -15,20 +14,24 @@ MAX_EP_LEN = 30
 
 EPSILON = 0.25
 
-# intialize maze rewards grid with values
-mc_maze_rewards = np.zeros(16)
-mc_maze_rewards[3] = 40
-mc_maze_rewards[12] = 10
-mc_maze_rewards[13] = -2
-mc_maze_rewards[6] = -10
-mc_maze_rewards[7] = -10
+# intialize state value grid
+state_val_grid = np.zeros(16)
+state_val_grid[3] = 0
+state_val_grid[12] = 0
+state_val_grid[13] = -2
+state_val_grid[6] = -10
+state_val_grid[7] = -10
 
-fv_maze_rewards = np.zeros((16, 4))
-fv_maze_rewards[3] = 40
-fv_maze_rewards[12] = 10
-fv_maze_rewards[13] = -2
-fv_maze_rewards[6] = -10
-fv_maze_rewards[7] = -10
+state_val_grid_fv = np.zeros((16, 4))
+state_val_grid_fv[3] = 0
+state_val_grid_fv[12] = 0
+state_val_grid_fv[13] = -2
+state_val_grid_fv[6] = -10
+state_val_grid_fv[7] = -10
+
+# Initialize environment
+env = Maze(maze_coords, reversed_maze,
+           step_cost=STEP_COST, max_ep_length=MAX_EP_LEN)
 
 def mc_evaluation_policy(env, discount_factor):
     """First visit Monte Carlo prediction for estimating V ~ v pi.
@@ -38,9 +41,9 @@ def mc_evaluation_policy(env, discount_factor):
         discount_factor ([type]): The discount factor
 
     Returns:
-        [type]: An array with rewards
+        [type]: An array with returns
     """
-    rewards = {
+    returns = {
         "0": [], "1": [], "2": [], "3": [],
         "4": [], "5": [], "6": [], "7": [],
         "8": [], "9": [], "10": [], "11": [],
@@ -51,7 +54,7 @@ def mc_evaluation_policy(env, discount_factor):
         start_state = env.reset()
         episode = []
         while True:
-            action = random.choice(ACTIONS)
+            action = random.choice(ACTIONS) # choose random policy
             next_state, reward, done = env.step(action)
             episode.append((start_state, reward))
             start_state = next_state
@@ -60,12 +63,13 @@ def mc_evaluation_policy(env, discount_factor):
 
         for i, step in enumerate(episode[::-1]):
             G = discount_factor * G + step[1]
+            # check the first visit
             if step[0] not in np.array(episode[::-1])[:, 0][i+1:]:
-                rewards[str(step[0])].append(G)
-                mc_maze_rewards[step[0]] = round(
-                    np.mean(rewards[str(step[0])]), 2)
+                returns[str(step[0])].append(G)
+                state_val_grid[step[0]] = round(
+                    np.mean(returns[str(step[0])]), 2)
 
-    return mc_maze_rewards
+    return state_val_grid
 
 
 def probability(A):
@@ -95,8 +99,8 @@ def probability(A):
     return np.array(probabilities)-substracter
 
 
-def rewards_lists(cells, actions):
-    """Initialize rewards lists
+def returns_lists(cells=16, actions=4):
+    """Initialize returns list. Each state has four possible actions.
 
     Args:
         cells ([type]): Array with cells in grid
@@ -117,14 +121,14 @@ def rewards_lists(cells, actions):
     possible_actions = []
     possible_actions = create_array(actions, possible_actions)
 
-    rewards = {}
+    returns = {}
     for state in possible_states:
         for action in possible_actions:
-            rewards[state+", "+action] = []
+            returns[state+", "+action] = []
 
-    return rewards
+    return returns
 
-def first_visit_mc(env, max_ep, discount_factor, rewards):
+def first_visit_mc(env, max_ep, discount_factor, returns):
     """On-policy first-visit MC control (for e-soft policies), estimates
     pi ~ pi*
 
@@ -132,7 +136,7 @@ def first_visit_mc(env, max_ep, discount_factor, rewards):
         env ([type]): Initialize environment
         max_ep ([type]): Maximum episodes
         discount_factor ([type]): The discount factor
-        rewards ([type]): Given rewards
+        returns ([type]): Given returns
 
     Returns:
         [type]: Array with rewards
@@ -142,7 +146,7 @@ def first_visit_mc(env, max_ep, discount_factor, rewards):
         state = env.reset()
         trajectory = []
         while True:
-            action_values = fv_maze_rewards[state]
+            action_values = state_val_grid_fv[state]
             probs = probability(action_values)
             action = np.random.choice(np.arange(4), p=probs)
             next_state, reward, done = env.step(action)
@@ -152,12 +156,13 @@ def first_visit_mc(env, max_ep, discount_factor, rewards):
                 break
         for idx, step in enumerate(trajectory[::-1]):
             G = discount_factor * G + step[2]
+            #
             # first visit check
             if step[0] not in np.array(trajectory[::-1])[:, 0][idx+1:]:
-                rewards[str(step[0])+", "+str(step[1])].append(G)
-                fv_maze_rewards[step[0]][step[1]] = np.mean(
-                    rewards[str(step[0])+", "+str(step[1])])
-    return fv_maze_rewards
+                returns[str(step[0])+", "+str(step[1])].append(G)
+                state_val_grid_fv[step[0]][step[1]] = np.mean(
+                    returns[str(step[0])+", "+str(step[1])])
+    return state_val_grid_fv
 
 
 def print_val(values, length=4):
@@ -170,3 +175,7 @@ def print_val(values, length=4):
     for i in range(len(values) // length):
         sub_list = values[i * length:(i + 1) * length]
         print(' | '.join(map(str, sub_list)))
+
+
+# returns = returns_lists()
+# print(first_visit_mc(env=env, max_ep=MAX_EP, discount_factor=1, returns=returns))
