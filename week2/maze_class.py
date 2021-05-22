@@ -35,9 +35,9 @@ class Maze():
         self.col = 4
         self.grid = np.zeros((self.row,self.col))
 
-        # TERMINAL STATES (40,10)
-        self.grid[0][3] = 0
-        self.grid[3][0] = 0
+        # TERMINAL STATES
+        self.grid[0][3] = 0 # 40
+        self.grid[3][0] = 0 # 10
 
         # WATER STATES
         self.grid[1][2] = -10
@@ -72,8 +72,8 @@ class Maze():
         self.steps = 0
         self.grid = np.zeros((4,4))
 
-        self.grid[0][3] = 0
-        self.grid[3][0] = 0
+        self.grid[0][3] = 0 # 40
+        self.grid[3][0] = 0 # 10
 
         # WATER STATES
         self.grid[1][2] = -10
