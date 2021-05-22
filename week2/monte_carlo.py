@@ -1,4 +1,3 @@
-from re import A
 from maze_class import Maze
 from coords import maze_coords, reversed_maze
 from plot_functions import plot_grid, q_table, plot_q_table
@@ -8,7 +7,7 @@ sys.path.append('/Users/wolfsinem/as/week2/')
 import numpy as np
 import random
 
-# Initialise parameters
+# Initialize parameters
 MAX_EP = 100
 ACTIONS = [0, 1, 2, 3]
 STEP_COST = -1
@@ -81,19 +80,19 @@ def probability(A):
     UP, DOWN, RIGHT or UP.
 
     Args:
-        A ([type]): [description]
+        A ([type]): Takes the action values e.g. (10, -1)
 
     Returns:
         [type]: The probabilty
     """
-    idx = np.argmax(A)
+    idx = np.argmax(
+        A)  # return the indices of the maximum values along an axis
     probabilities = []
-    action_val = np.sqrt(sum([i**2 for i in A]))
-
+    action_val = np.sqrt(sum([i**2 for i in A])) # return non-negative square root of array
     if action_val == 0:
         action_val = 1.0
     for i, a in enumerate(A):
-        if i == idx:
+        if i == idx: # if the index (0,1) is equal to indices of max value (0,1)
             probabilities.append(round(1-EPSILON + (EPSILON/action_val), 3))
         else:
             probabilities.append(round(EPSILON/action_val, 3))
