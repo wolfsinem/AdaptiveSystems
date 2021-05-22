@@ -4,6 +4,10 @@
 
 In de Jupyter Notebook staat alle informatie met betrekking tot de code.
 
+**Returns** = discounted sum(rewards) in one whole episode
+
+**Value function** = expected discounted sum of rewards from certain state
+
 1. Geef de juiste parameters aan.
 2. Initialiseer de maze grid met de rewards.
 3. Run de functie ***getOptimalPolicy()***.
