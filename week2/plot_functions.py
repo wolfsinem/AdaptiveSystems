@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from evaluation.coords import *
+
+import sys
+sys.path.append('/Users/wolfsinem/as/week2/')
+from coords import *
 
 
 def plot_grid(evaluation):

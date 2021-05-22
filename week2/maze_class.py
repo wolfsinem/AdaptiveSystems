@@ -35,8 +35,8 @@ class Maze():
         self.grid = np.zeros((self.row,self.col))
 
         # TERMINAL STATES
-        self.grid[0][3] = 40
-        self.grid[3][0] = 10
+        self.grid[0][3] = 0
+        self.grid[3][0] = 0
 
         # WATER STATES
         self.grid[1][2] = -10
@@ -71,8 +71,8 @@ class Maze():
         self.steps = 0
         self.grid = np.zeros((4,4))
 
-        self.grid[0][3] = 40
-        self.grid[3][0] = 10
+        self.grid[0][3] = 0
+        self.grid[3][0] = 0
 
         # WATER STATES
         self.grid[1][2] = -10
@@ -103,6 +103,9 @@ class Maze():
 
         next_state = self.reversed_maze[str(current_position)].copy()
 
+        # If an action is equal to 0 (up), and the first index on row 0 is not
+        # equal to 0 (because there is a wall), extract with 1 from the first
+        # index
         if action == 0 and next_state[0] != 0:
             next_state[0] -= 1
 

@@ -1,7 +1,7 @@
 from maze_class import Maze
 from coords import maze_coords, reversed_maze
 import sys
-sys.path.append('/Users/wolfsinem/as/evaluation/')
+sys.path.append('/Users/wolfsinem/as/week2/')
 
 import numpy as np
 import random
