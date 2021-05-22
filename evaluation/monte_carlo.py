@@ -52,6 +52,8 @@ def mc_evaluation_policy(env, discount_factor):
     for ep in range(MAX_EP):
         G = 0
         start_state = env.reset()
+        # generate an episode
+        # an episode is a list of (state,action,reward) tuples
         episode = []
         while True:
             action = random.choice(ACTIONS) # choose random policy
@@ -60,12 +62,12 @@ def mc_evaluation_policy(env, discount_factor):
             start_state = next_state
             if done:
                 break
-
         for i, step in enumerate(episode[::-1]):
             G = discount_factor * G + step[1]
             # check the first visit
             if step[0] not in np.array(episode[::-1])[:, 0][i+1:]:
                 returns[str(step[0])].append(G)
+                # calculate the average return and add to returns dict
                 state_val_grid[step[0]] = round(
                     np.mean(returns[str(step[0])]), 2)
 
@@ -144,6 +146,8 @@ def first_visit_mc(env, max_ep, discount_factor, returns):
     for ep in range(max_ep):
         G = 0
         state = env.reset()
+        # generate trajectory
+        # each item is as follows (state,action,reward)
         trajectory = []
         while True:
             action_values = state_val_grid_fv[state]
@@ -156,10 +160,10 @@ def first_visit_mc(env, max_ep, discount_factor, returns):
                 break
         for idx, step in enumerate(trajectory[::-1]):
             G = discount_factor * G + step[2]
-            #
             # first visit check
             if step[0] not in np.array(trajectory[::-1])[:, 0][idx+1:]:
                 returns[str(step[0])+", "+str(step[1])].append(G)
+                # calculate the average return
                 state_val_grid_fv[step[0]][step[1]] = np.mean(
                     returns[str(step[0])+", "+str(step[1])])
     return state_val_grid_fv
