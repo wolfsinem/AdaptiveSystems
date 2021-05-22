@@ -1,5 +1,7 @@
+from re import A
 from maze_class import Maze
 from coords import maze_coords, reversed_maze
+from plot_functions import plot_grid, q_table, plot_q_table
 import sys
 sys.path.append('/Users/wolfsinem/as/week2/')
 
@@ -158,7 +160,9 @@ def first_visit_mc(env, max_ep, discount_factor, returns):
             state = next_state
             if done:
                 break
+        # find all the states that have been visited
         for idx, step in enumerate(trajectory[::-1]):
+            # calculate the return
             G = discount_factor * G + step[2]
             # first visit check
             if step[0] not in np.array(trajectory[::-1])[:, 0][idx+1:]:
@@ -182,4 +186,5 @@ def print_val(values, length=4):
 
 
 # returns = returns_lists()
-# print(first_visit_mc(env=env, max_ep=MAX_EP, discount_factor=1, returns=returns))
+# a = mc_evaluation_policy(env, discount_factor=1)
+# plot_grid(a.reshape((4, 4)))
