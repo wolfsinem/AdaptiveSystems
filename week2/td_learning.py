@@ -7,7 +7,7 @@ from coords import maze_coords, reversed_maze
 # Initialize parameters
 MAX_EP = 5000
 ALPHA = 0.01  # learning rate
-ACTIONS = [0, 1, 2, 3]
+ACTIONS = [0, 1, 2, 3] # all possible actions such as up and down...
 
 # Initialize state value grid with 16 cells (one value per cell)
 # For TD learning
@@ -44,8 +44,7 @@ def td_learning(env, discount_factor):
         while True:
             action = random.choice(ACTIONS)  # Choose random policy
             next_state, reward, done = env.step(action)
-
-            # Updating
+            # updating the state value grid
             state_val_grid[state] += ALPHA * \
                 (reward + discount_factor *
                  state_val_grid[next_state] - state_val_grid[state])
@@ -58,7 +57,7 @@ def td_learning(env, discount_factor):
 
 def get_action(q_values, epsilon):
     """This function calculates the e-greedy which is used for the SARSA
-    algorithm
+    algorithm.
 
     Args:
         q_values ([type]): [description]
@@ -123,14 +122,11 @@ def sarsaMAX(env, discount_factor, alpha):
         while True:
             action = get_action(state_val_grid_[state], 1 * 0.95**iterator)
             next_state, reward, done = env.step(action)
-
             # Updating
             state_val_grid_[state][action] += alpha * (reward + discount_factor * max(
                 state_val_grid_[next_state]) - state_val_grid_[state][action])
-
             iterator += 1
             state = next_state
-
             if done:
                 break
     return state_val_grid_
