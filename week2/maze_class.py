@@ -30,11 +30,12 @@ class Maze():
         self.list_actions = list(self.actions.values())
         self.n_actions = len(self.list_actions)
 
+        # size of the grid given x rows and x columns
         self.row = 4
         self.col = 4
         self.grid = np.zeros((self.row,self.col))
 
-        # TERMINAL STATES
+        # TERMINAL STATES (40,10)
         self.grid[0][3] = 0
         self.grid[3][0] = 0
 
@@ -45,8 +46,8 @@ class Maze():
         # ENEMY STATE
         self.grid[3][1] = -2
 
-        self.exploring_starts = es
-
+        self.exploring_starts = es # default is FALSE
+        # cell place of some states
         self.terminal_state1 = 3
         self.terminal_state2 = 12
         self.start_state = 14
@@ -82,10 +83,11 @@ class Maze():
         self.grid[3][1] = -2
 
         if self.exploring_starts:
+            # choose a random cell place to start
             self.start_state = np.random.choice(
                 [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16])
         else:
-            self.start_state = 14
+            self.start_state = 14 # this is the default start state
         return self.start_state
 
 
@@ -107,10 +109,10 @@ class Maze():
         # equal to 0 (because there is a wall), extract with 1 from the first
         # index
         if action == 0 and next_state[0] != 0:
-            next_state[0] -= 1
+            next_state[0] -= 1 # up
 
         elif action == 1 and next_state[1] != 3:
-            next_state[1] += 1
+            next_state[1] += 1  # right
 
         elif action == 2 and next_state[0] != 3:
             next_state[0] += 1  # down
@@ -138,20 +140,25 @@ class Maze():
 
         self.steps += 1
 
+        # first terminal state at [0][3] gives reward of 40
         if next_state == self.terminal_state1:
             reward = 40
             self.done = True
 
+        # second terminal state at [3][0] gives reward of 10
         elif next_state == self.terminal_state2:
             reward = 10
             self.done = True
 
+        # water states at [1][2], [1][3] gives reward of -10
         elif next_state == any(self.water):
             reward = -10
 
+        # getting in enemy state at [3][1] gives reward of -2
         elif next_state == self.enemy:
             reward = -2
 
+        # if not in any state above, reward/step_cost is -1
         else:
             reward = self.step_cost
 
