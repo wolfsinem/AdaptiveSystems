@@ -32,8 +32,8 @@ def td_learning(env, discount_factor):
     reinforcement learning. This function implements that.
 
     Args:
-        env ([type]): [description]
-        discount_factor ([type]): [description]
+        env ([type]): [the environment]
+        discount_factor ([type]): [discount factor]
 
     Returns:
         [type]: [description]
@@ -60,11 +60,11 @@ def get_action(q_values, epsilon):
     algorithm.
 
     Args:
-        q_values ([type]): [description]
-        epsilon ([type]): [description]
+        q_values ([type]): [the Q values]
+        epsilon ([type]): [epsilon]
 
     Returns:
-        [type]: [description]
+        [int]: [e-greedy]
     """
 
     if random.random() > epsilon:
@@ -77,12 +77,12 @@ def sarsa(env, discount_factor, alpha):
     """Sarsa (on-policy TD control) for estimating Q ~ q*
 
     Args:
-        env ([type]): [description]
-        discount_factor ([type]): [description]
-        alpha ([type]): [description]
+        env ([type]): [the environment]
+        discount_factor ([type]): [discount factor]
+        alpha ([type]): [alpha]
 
     Returns:
-        [type]: [description]
+        [type]: [state value grid]
     """
     for ep in range(MAX_EP):
         iterator = 1
@@ -109,12 +109,12 @@ def sarsaMAX(env, discount_factor, alpha):
     that.
 
     Args:
-        env ([type]): [description]
-        discount_factor ([type]): [description]
-        alpha ([type]): [description]
+        env ([type]): [the environment]
+        discount_factor ([type]): [discount factor]
+        alpha ([type]): [alpha]
 
     Returns:
-        [type]: [description]
+        [type]: [state value grid]
     """
     for ep in range(MAX_EP):
         iterator = 1

@@ -13,11 +13,11 @@ class Maze():
         """[summary]
 
         Args:
-            maze_coords ([type]): [description]
-            reversed_maze ([type]): [description]
-            step_cost (int, optional): [description]. Defaults to -1.
-            max_ep_length (int, optional): [description]. Defaults to 100.
-            es (bool, optional): [description]. Defaults to False.
+            maze_coords ([type]): [maze coordinations]
+            reversed_maze ([type]): [reversed maze coordinations]
+            step_cost (int, optional): [cost of step]. Defaults to -1.
+            max_ep_length (int, optional): [maximum episodes]. Defaults to 100.
+            es (bool, optional): [if exploring start]. Defaults to False.
         """
 
         self.actions = {
